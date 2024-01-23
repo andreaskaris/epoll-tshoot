@@ -1,0 +1,5 @@
+## Build instructions
+
+```
+make build
+```
