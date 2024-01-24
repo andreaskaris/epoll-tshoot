@@ -17,5 +17,5 @@ client-server/_output/client
 ## Run systemtap on local system
 
 ```
-make run-stap
+make -C systemtap run-stap
 ```
