@@ -14,7 +14,7 @@ In another CLI:
 client-server/_output/client
 ```
 
-## Run systemtap on local systemtap
+## Run systemtap on local system
 
 ```
 make run-stap
