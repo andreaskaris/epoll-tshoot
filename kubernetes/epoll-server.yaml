@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: epoll-server
+  name: epoll-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: epoll-server
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: epoll-server
+    spec:
+      containers:
+      - command:
+        - /usr/bin/server_epoll
+        - 0.0.0.0
+        - "2222"
+        image: quay.io/akaris/epoll-client-server
+        name: epoll-client-server
+        ports:
+        - containerPort: 2222
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: epoll-server
+  name: epoll-server
+spec:
+  ports:
+  - port: 2222
+    protocol: TCP
+    targetPort: 2222
+  selector:
+    app: epoll-server
+status:
+  loadBalancer: {}

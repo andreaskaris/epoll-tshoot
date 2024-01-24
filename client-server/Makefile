@@ -17,6 +17,10 @@ clean:
 .PHONY: build
 build: clean client server server_epoll
 
-.PHONY: container-image
-container-image:
-	podman build -t epoll-client-server .
+.PHONY: container-image-build
+container-image-build:
+	podman build -t quay.io/akaris/epoll-client-server .
+
+.PHONY: container-image-push
+container-image-push:
+	podman push quay.io/akaris/epoll-client-server

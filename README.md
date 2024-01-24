@@ -19,3 +19,21 @@ client-server/_output/client
 ```
 make -C systemtap run-stap
 ```
+
+## Build container image
+
+Build image:
+```
+make -C client-server container-image-build
+```
+
+Push image:
+```
+make -C client-server container-image-push
+```
+
+## Deploy epoll client and server
+
+```
+make -C kubernetes deploy
+```
