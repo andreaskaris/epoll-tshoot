@@ -1,0 +1,46 @@
+#!/usr/bin/stap
+
+probe syscall.epoll_wait {
+    if (pid() != target()) next
+
+    time = gettimeofday_ms()
+    htime = tz_ctime(gettimeofday_s())
+    execname = execname()
+    pid = pid()
+    tid = tid()
+    prefix = sprintf("[%s (%d)] %s(%d:%d):", htime, time, execname, pid, tid)
+
+    printf("%s %s(%s)\n", prefix, ppfunc(), argstr)
+}	
+
+probe syscall.epoll_wait.return {
+    if (pid() != target()) next
+
+    time = gettimeofday_ms()
+    htime = tz_ctime(gettimeofday_s())
+    execname = execname()
+    pid = pid()
+    tid = tid()
+    prefix = sprintf("[%s (%d)] %s(%d:%d):", htime, time, execname, pid, tid)
+
+    printf("%s %s(...) ret: %s \n", prefix, ppfunc(), retstr)
+}	
+
+probe kernel.statement("do_epoll_wait@fs/eventpoll.c:2229") {
+    if (pid() != target()) next
+
+    time = gettimeofday_ms()
+    htime = tz_ctime(gettimeofday_s())
+    execname = execname()
+    pid = pid()
+    tid = tid()
+    prefix = sprintf("[%s (%d)] %s(%d:%d):", htime, time, execname, pid, tid)
+
+    printf("%s \t%s\n", prefix, ppfunc())
+    printf("%s \tnum events: %d\n", prefix, $error)
+    for(i = 0; i < $error && i < $maxevents; i++) {
+        printf("%s \t%d: events[i].events: %d, events[i].fd: %d\n",
+            prefix, i, 
+            $events[i]->events, $events[i]->data) // should be events[i].data.fd??
+    }
+}
