@@ -12,6 +12,7 @@
 #include <sys/epoll.h>
 #include <errno.h>
 #include <signal.h>
+#include <stdlib.h>
 
 #define EPOLL_MAX_EVENTS 100
 #define EPOLL_TIMEOUT    30000
@@ -102,8 +103,16 @@ void epoll_ctl_close(int epoll_fd, int fd) {
     close(fd);
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+    if(argc != 3) {
+        fprintf(stderr, "Please provide the listening address and port.\n");
+        return 1;
+    }
+    char * address = argv[1];
+    int port = atoi(argv[2]);
+    // TODO: Add some validation for arguments.
+
     int socket_fd, client_sock, client_size;
     struct sockaddr_in client_addr;
     struct epoll_event events[EPOLL_MAX_EVENTS];
@@ -118,8 +127,8 @@ int main(void)
 		return 1;
 	}
 
-    // Start listening on port 1234 and add socket to epoll.
-    socket_fd = bind_socket("127.0.0.1", 1234);
+    // Start listening on address <address> and port <port> and add socket to epoll.
+    socket_fd = bind_socket(address, port);
     if(socket_fd == -1) {
             printf("Could not bind socket, %s\n", strerror(errno));
     }

@@ -16,3 +16,7 @@ clean:
 
 .PHONY: build
 build: clean client server server_epoll
+
+.PHONY: container-image
+container-image:
+	podman build -t epoll-client-server .

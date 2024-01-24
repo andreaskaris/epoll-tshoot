@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <time.h>
+#include <stdlib.h>
 
 int connect_socket(const char* ip, int port) {
     int socket_fd;
@@ -63,13 +64,25 @@ int send_message(int fd, const char* message) {
     return 0;
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+    if(argc != 3) {
+        fprintf(stderr, "Please provide the address and port to connect to.\n");
+        return 1;
+    }
+    char * address = argv[1];
+    int port = atoi(argv[2]);
+    // TODO: Add some validation for arguments.
+    printf("Connecting to %s:%d\n", address, port);
+
     int socket_fd;
     char client_message[2000];
     memset(client_message,'\0',sizeof(client_message));
     
-    socket_fd = connect_socket("127.0.0.1", 1234);
+    socket_fd = connect_socket(address, port);
+    if(socket_fd == -1) {
+        return 1;
+    }
 
     for(int i = 0;; i++) {
         sprintf(client_message, "%d", i);
