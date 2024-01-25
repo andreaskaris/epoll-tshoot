@@ -12,8 +12,50 @@ probe begin
     printf ("%s Starting probe\n", prefix)
 }
 
+probe syscall.epoll_ctl {
+    // if (pid() != target()) next
+
+    time = gettimeofday_ms()
+    htime = tz_ctime(gettimeofday_s())
+    execname = execname()
+    pid = pid()
+    tid = tid()
+    prefix = sprintf("[%s (%d)] %s(%d:%d):", htime, time, execname, pid, tid)
+
+    printf("%s %s(%s)\n", prefix, ppfunc(), argstr)
+}
+
+probe syscall.epoll_ctl.return {
+    // if (pid() != target()) next
+
+    time = gettimeofday_ms()
+    htime = tz_ctime(gettimeofday_s())
+    execname = execname()
+    pid = pid()
+    tid = tid()
+    prefix = sprintf("[%s (%d)] %s(%d:%d):", htime, time, execname, pid, tid)
+
+    printf("%s %s(...) ret: %s \n", prefix, ppfunc(), retstr)
+}
+
+probe kernel.statement("do_epoll_ctl@fs/eventpoll.c:2017") {
+    // if (pid() != target()) next
+
+    time = gettimeofday_ms()
+    htime = tz_ctime(gettimeofday_s())
+    execname = execname()
+    pid = pid()
+    tid = tid()
+    prefix = sprintf("[%s (%d)] %s(%d:%d):", htime, time, execname, pid, tid)
+
+    printf("%s \t%s; ", prefix, ppfunc())
+    printf("epfd: %d, op: %d, fd: %d, events.events: %d, events.data: %d", 
+            $epfd, $op, $fd, $epds->events, $epds->data)
+    printf("\n")
+}
+
 probe syscall.epoll_wait {
-    if (pid() != target()) next
+    // if (pid() != target()) next
 
     time = gettimeofday_ms()
     htime = tz_ctime(gettimeofday_s())
@@ -26,7 +68,7 @@ probe syscall.epoll_wait {
 }	
 
 probe syscall.epoll_wait.return {
-    if (pid() != target()) next
+    // if (pid() != target()) next
 
     time = gettimeofday_ms()
     htime = tz_ctime(gettimeofday_s())
@@ -38,16 +80,8 @@ probe syscall.epoll_wait.return {
     printf("%s %s(...) ret: %s \n", prefix, ppfunc(), retstr)
 }	
 
-/*typedef struct
-{
-  void *ptr;
-  int fd;
-  uint32_t u32;
-  uint64_t u64;
-} epoll_data;*/
-
 probe kernel.statement("do_epoll_wait@fs/eventpoll.c:2229") {
-    if (pid() != target()) next
+    // if (pid() != target()) next
 
     time = gettimeofday_ms()
     htime = tz_ctime(gettimeofday_s())
@@ -56,11 +90,11 @@ probe kernel.statement("do_epoll_wait@fs/eventpoll.c:2229") {
     tid = tid()
     prefix = sprintf("[%s (%d)] %s(%d:%d):", htime, time, execname, pid, tid)
 
-    printf("%s \t%s\n", prefix, ppfunc())
-    printf("%s \tnum events: %d\n", prefix, $error)
+    printf("%s \t%s; ", prefix, ppfunc())
+    printf("num events: %d; ", $error)
     for(i = 0; i < $error && i < $maxevents; i++) {
-        printf("%s \t%d: events[i].events: %d, events[i].data: %d\n",
-            prefix, i, 
-            $events[i]->events, $events[i]->data)
+        printf("%d: events[i].events: %d, events[i].data: %d;",
+            i, $events[i]->events, $events[i]->data)
     }
+    printf("\n")
 }
