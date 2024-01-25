@@ -16,7 +16,7 @@ privileged ()
     oc label ns $1 pod-security.kubernetes.io/audit=privileged --overwrite=true
 }
 
-oc new-project "${PROJECT}" || oc project "${PROJECT}"
+oc new-project "${PROJECT}" || oc project "${PROJECT}" || true
 oc adm policy add-scc-to-user privileged -z default
 privileged "${PROJECT}"
 oc create configmap systemtap --from-file="${DIR}/../systemtap/epoll_syscall.stap" --from-file="${DIR}/../systemtap/entrypoint.sh" -o yaml --dry-run > \
