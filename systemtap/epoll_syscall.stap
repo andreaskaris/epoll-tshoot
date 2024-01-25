@@ -1,5 +1,17 @@
 #!/usr/bin/stap
 
+probe begin
+{
+    time = gettimeofday_ms()
+    htime = tz_ctime(gettimeofday_s())
+    execname = execname()
+    pid = pid()
+    tid = tid()
+    prefix = sprintf("[%s (%d)] %s(%d:%d):", htime, time, execname, pid, tid)
+
+    printf ("%s Starting probe\n", prefix)
+}
+
 probe syscall.epoll_wait {
     if (pid() != target()) next
 

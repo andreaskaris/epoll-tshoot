@@ -36,4 +36,12 @@ make -C client-server container-image-push
 
 ```
 make -C kubernetes deploy
+# make -C kubernetes clean # For cleanup.
+```
+
+## Deploy systemtap daemonset
+
+```
+make -C kubernetes deploy-systemtap SYSTEMTAP_IMAGE="quay.io/akaris/systemtap:ocp-4.12.33-rt" NODE_SELECTOR="worker" PGREP="server_epoll 0.0.0.0 2222|client 172.30.44.140 2222"
+# make -C kubernetes clean-systemtap # For cleanup.
 ```
