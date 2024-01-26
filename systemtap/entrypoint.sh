@@ -3,7 +3,7 @@ set -eux
 
 DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 LOG_DIR=/host/var/log/systemtap
-STAP_LOG_MAX_SIZE=1048576
+STAP_LOG_MAX_SIZE=1000
 LOG_ROTATE_SIZE=900M
 LOG_ROTATE_OLDER_THAN=5
 
