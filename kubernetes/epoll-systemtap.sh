@@ -62,7 +62,7 @@ spec:
         command:
         - /bin/bash
         - /systemtap/entrypoint.sh
-        - "${PGREP}"
+        # - "${PGREP}"
         securityContext:
           privileged: true
           runAsUser: 0
