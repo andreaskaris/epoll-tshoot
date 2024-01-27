@@ -7,6 +7,7 @@ STAP_LOG_MAX_SIZE=1000
 LOG_ROTATE_SIZE=900M
 LOG_ROTATE_OLDER_THAN=5
 
+mkdir -p /host/var/log/systemtap/
 timeout 86400 stap /systemtap/epoll_syscall.stap -o /host/var/log/systemtap/stap.log -S ${STAP_LOG_MAX_SIZE} &
 
 for i in {1..1460}; do
