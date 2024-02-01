@@ -12,6 +12,84 @@ probe begin
     printf ("%s Starting probe\n", prefix)
 }
 
+probe syscall.epoll_create {
+    // if (pid() != target()) next
+
+    time = gettimeofday_ms()
+    htime = tz_ctime(gettimeofday_s())
+    execname = execname()
+    pid = pid()
+    tid = tid()
+    prefix = sprintf("[%s (%d)] %s(%d:%d):", htime, time, execname, pid, tid)
+
+    printf("%s %s(%s)\n", prefix, ppfunc(), argstr)
+}
+
+probe syscall.epoll_create.return {
+    // if (pid() != target()) next
+
+    time = gettimeofday_ms()
+    htime = tz_ctime(gettimeofday_s())
+    execname = execname()
+    pid = pid()
+    tid = tid()
+    prefix = sprintf("[%s (%d)] %s(%d:%d):", htime, time, execname, pid, tid)
+
+    printf("%s %s(...) ret: %s \n", prefix, ppfunc(), retstr)
+}
+
+probe syscall.epoll_create1 {
+    // if (pid() != target()) next
+
+    time = gettimeofday_ms()
+    htime = tz_ctime(gettimeofday_s())
+    execname = execname()
+    pid = pid()
+    tid = tid()
+    prefix = sprintf("[%s (%d)] %s(%d:%d):", htime, time, execname, pid, tid)
+
+    printf("%s %s(%s)\n", prefix, ppfunc(), argstr)
+}
+
+probe syscall.epoll_create1.return {
+    // if (pid() != target()) next
+
+    time = gettimeofday_ms()
+    htime = tz_ctime(gettimeofday_s())
+    execname = execname()
+    pid = pid()
+    tid = tid()
+    prefix = sprintf("[%s (%d)] %s(%d:%d):", htime, time, execname, pid, tid)
+
+    printf("%s %s(...) ret: %s \n", prefix, ppfunc(), retstr)
+}
+
+probe syscall.epoll_pwait {
+    // if (pid() != target()) next
+
+    time = gettimeofday_ms()
+    htime = tz_ctime(gettimeofday_s())
+    execname = execname()
+    pid = pid()
+    tid = tid()
+    prefix = sprintf("[%s (%d)] %s(%d:%d):", htime, time, execname, pid, tid)
+
+    printf("%s %s(%s)\n", prefix, ppfunc(), argstr)
+}
+
+probe syscall.epoll_pwait.return {
+    // if (pid() != target()) next
+
+    time = gettimeofday_ms()
+    htime = tz_ctime(gettimeofday_s())
+    execname = execname()
+    pid = pid()
+    tid = tid()
+    prefix = sprintf("[%s (%d)] %s(%d:%d):", htime, time, execname, pid, tid)
+
+    printf("%s %s(...) ret: %s \n", prefix, ppfunc(), retstr)
+}
+
 probe syscall.epoll_ctl {
     // if (pid() != target()) next
 
